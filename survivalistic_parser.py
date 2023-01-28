@@ -8,16 +8,22 @@ from tkinter.filedialog import askdirectory
 ##########
 
 # How much thirst you recover from drinkable items
-DRINKABLE_THIRST_RECOVERY = 80
+DRINKABLE_THIRST_RECOVERY = 60
 
 # Cooked food base thirst recovery
 COOKED_THIRST_RECOVERY = 10
 
 # Cooked Foods that count as watery and give extra thirst recovery
-WATERY_FOODS = ['Stew', 'Soup', 'Gumbo', 'Broth', 'Ramen', 'Elixir']
+WATERY_FOODS = ['Stew', 'Soup', 'Gumbo', 'Broth', 'Ramen']
 
 # Watery cooked food thirst recover
-COOKED_WATERY_THIRST_RECOVERY = 40
+COOKED_WATERY_THIRST_RECOVERY = 30
+
+# List of keywords to count as potion
+POTIONS = ['Potion', 'Elixir', 'Tincture', 'Concoction']
+
+# Potion thirst recovery fixed value
+POTION_THIRST_RECOVERY = 75
 
 # How much console output you see (Possible values "VERBOSE", "DEBUG", "INFO")
 LOG_LEVEL = "INFO"
@@ -104,25 +110,29 @@ def get_entries(obj_list):
 
         name = jdata.get('Name')
 
-        food_value = 0
         edibility = jdata.get('Edibility')
-        # Acording to the JA docs in edible items can be set to -300
+        # According to the JA docs in edible items can be set to -300
         # https://github.com/spacechase0/StardewValleyMods/blob/develop/JsonAssets/docs/author-guide.md#objects
-        if not (edibility is None) and edibility != -300:
-            food_value = max(-100, min(edibility, 100))
+        if edibility != -300:
+            food_value = 0
+            if not (edibility is None):
+                food_value = max(-100, min(edibility, 100))
 
-        drink_value = 0
-        if jdata.get('EdibleIsDrink') is True:
-            drink_value = DRINKABLE_THIRST_RECOVERY
-        else:
-            if jdata.get('Category') == 'Cooking':
-                if any(word in name for word in WATERY_FOODS):
-                    drink_value = COOKED_WATERY_THIRST_RECOVERY
-                else:
-                    drink_value = COOKED_THIRST_RECOVERY
-        if food_value != 0 or drink_value != 0:
-            log('Adding: "' + name + '" with ' + str(food_value) + ' food and ' + str(drink_value) + ' water', VERBOSE)
-            entries.append([name, str(food_value) + '/' + str(drink_value)])
+            drink_value = 0
+            if any(word in name for word in POTIONS):
+                drink_value = POTION_THIRST_RECOVERY
+            elif jdata.get('EdibleIsDrink') is True:
+                drink_value = DRINKABLE_THIRST_RECOVERY
+            else:
+                if jdata.get('Category') == 'Cooking':
+                    if any(word in name for word in WATERY_FOODS):
+                        drink_value = COOKED_WATERY_THIRST_RECOVERY
+                    else:
+                        drink_value = COOKED_THIRST_RECOVERY
+            if food_value != 0 or drink_value != 0:
+                log('Adding: "' + name + '" with ' + str(food_value) + ' food and ' + str(drink_value) + ' water', VERBOSE)
+                entries.append([name, str(food_value) + '/' + str(drink_value)])
+
         infile.close()
     return entries
 
