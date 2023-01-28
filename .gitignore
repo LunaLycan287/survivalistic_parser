@@ -1,4 +1,5 @@
 /build/
 /dist/
 Survival Parser.spec
-/output/
+/output_adjusted/
+/__pycache__/
