@@ -30,16 +30,22 @@ There are some configuration options inside the script. You can edit them to con
 
 ```python
 # How much thirst you recover from drinkable items
-DRINKABLE_THIRST_RECOVERY = 80
+DRINKABLE_THIRST_RECOVERY = 60
 
 # Cooked food base thirst recovery
 COOKED_THIRST_RECOVERY = 10
 
 # Cooked Foods that count as watery and give extra thirst recovery
-WATERY_FOODS = ['Stew', 'Soup', 'Gumbo', 'Broth', 'Ramen', 'Elixir']
+WATERY_FOODS = ['Stew', 'Soup', 'Gumbo', 'Broth', 'Ramen']
 
 # Watery cooked food thirst recover
-COOKED_WATERY_THIRST_RECOVERY = 40
+COOKED_WATERY_THIRST_RECOVERY = 30
+
+# List of keywords to count as potion
+POTIONS = ['Potion', 'Elixir', 'Tincture', 'Concoction']
+
+# Potion thirst recovery fixed value
+POTION_THIRST_RECOVERY = 75
 
 # How much console output you see (Possible values "VERBOSE", "DEBUG", "INFO")
 LOG_LEVEL = "INFO"
